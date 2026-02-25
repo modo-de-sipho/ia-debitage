@@ -2,8 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Groq Beast</title>
-
+<title>ia debitage</title>
 <style>
 body {
   font-family: Arial, sans-serif;
@@ -16,7 +15,6 @@ body {
   height:100vh;
   margin:0;
 }
-
 #chat {
   width:90%;
   max-width:600px;
@@ -25,7 +23,6 @@ body {
   border-radius:18px;
   box-shadow:0 0 25px rgba(0,0,0,0.6);
 }
-
 textarea {
   width:100%;
   padding:15px;
@@ -36,8 +33,8 @@ textarea {
   outline:none;
   background:#222;
   color:white;
+  box-sizing:border-box;
 }
-
 button {
   margin-top:12px;
   padding:12px;
@@ -51,16 +48,13 @@ button {
   color:white;
   transition:0.2s;
 }
-
 button:hover {
   background:#45a049;
 }
-
 button:disabled {
   background:#555;
   cursor:not-allowed;
 }
-
 .response {
   margin-top:20px;
   background:#222;
@@ -71,24 +65,19 @@ button:disabled {
 }
 </style>
 </head>
-
 <body>
-
 <div id="chat">
   <textarea id="input" rows="4" placeholder="Tape ton message..."></textarea>
   <button id="sendBtn">Envoyer</button>
   <div id="output" class="response"></div>
 </div>
-
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-
   const input = document.getElementById("input")
   const output = document.getElementById("output")
   const button = document.getElementById("sendBtn")
 
   button.addEventListener("click", send)
-
   input.addEventListener("keydown", (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault()
@@ -97,7 +86,6 @@ document.addEventListener("DOMContentLoaded", () => {
   })
 
   async function send() {
-
     const message = input.value.trim()
     if (!message) return
 
@@ -116,7 +104,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!response.ok) {
         throw new Error("Erreur serveur " + response.status)
       }
-
       if (!text) {
         throw new Error("Réponse vide du serveur")
       }
@@ -128,7 +115,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       output.innerHTML = data.reply
-
     } catch (error) {
       console.error(error)
       output.innerHTML = "💥 " + error.message
@@ -136,9 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     button.disabled = false
   }
-
 })
 </script>
-
 </body>
 </html>
