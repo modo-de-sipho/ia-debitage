@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Groq Beast</title>
+<style>
+body {
+  font-family: Arial;
+  background: linear-gradient(135deg,#0f0f0f,#1a1a1a);
+  color: white;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  height:100vh;
+  margin:0;
+}
+#chat {
+  width:90%;
+  max-width:600px;
+  margin-top:50px;
+}
+textarea {
+  width:100%;
+  padding:15px;
+  border-radius:12px;
+  border:none;
+  font-size:16px;
+}
+button {
+  margin-top:10px;
+  padding:10px 20px;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
+  font-weight:bold;
+}
+.response {
+  margin-top:20px;
+  background:#222;
+  padding:15px;
+  border-radius:12px;
+}
+</style>
+</head>
+<body>
+
+<div id="chat">
+  <textarea id="input" placeholder="Tape ton message..."></textarea>
+  <button onclick="send()">Envoyer</button>
+  <div id="output" class="response"></div>
+</div>
+
+<script>
+async function send() {
+  const input = document.getElementById("input").value
+  const output = document.getElementById("output")
+
+  output.innerHTML = "⚡ Génération..."
+
+  const res = await fetch("/api/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: input })
+  })
+
+  const data = await res.json()
+  output.innerHTML = data.reply
+}
+</script>
+
+</body>
+</html>
