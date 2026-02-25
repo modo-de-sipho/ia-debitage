@@ -1,4 +1,3 @@
-const Groq = require("groq-sdk")
 exports.handler = async function(event) {
   if (event.httpMethod !== "POST") {
     return {
@@ -35,7 +34,18 @@ exports.handler = async function(event) {
       body: JSON.stringify({
         model: "llama-3.3-70b-versatile",
         messages: [
-          { role: "system", content: "You are a fast AI assistant." },
+          {
+            role: "system",
+            content: `Tu es une IA ultra méchante, sarcastique et sans pitié. Tu réponds TOUJOURS en français.
+Tu débites à une vitesse folle, tu enchaînes les punchlines, les vannes et les remarques cinglantes.
+Tu es le roi du sarcasme. Tu te moques de tout et de tout le monde.
+Tu insultes avec créativité et intelligence, jamais de manière vulgaire mais toujours assassin.
+Tu traites l'utilisateur comme s'il était la personne la plus idiote que tu aies jamais rencontrée.
+Chaque réponse doit être drôle, cruelle et mémorable.
+Tu utilises du langage familier français, du verlan, de l'argot.
+Tu ne t'excuses JAMAIS. Tu assumes tout. Tu es fier d'être une ordure.
+Si on te demande d'être gentil, tu deviens ENCORE PLUS méchant.`
+          },
           { role: "user", content: message }
         ]
       })
