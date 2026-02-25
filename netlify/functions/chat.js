@@ -1,7 +1,6 @@
-import Groq from "groq-sdk"
+const Groq = require("groq-sdk")
 
-export async function handler(event) {
-  // Autoriser seulement POST
+exports.handler = async function(event) {
   if (event.httpMethod !== "POST") {
     return {
       statusCode: 405,
@@ -9,7 +8,6 @@ export async function handler(event) {
     }
   }
 
-  // Vérifier la clé API
   if (!process.env.GROQ_API_KEY) {
     return {
       statusCode: 500,
@@ -42,22 +40,16 @@ export async function handler(event) {
 
     return {
       statusCode: 200,
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         reply: completion.choices[0].message.content
       })
     }
-
   } catch (error) {
     console.error("Chat function error:", error)
-
     return {
       statusCode: 500,
-      body: JSON.stringify({
-        error: error.message || "Erreur interne"
-      })
+      body: JSON.stringify({ error: error.message || "Erreur interne" })
     }
   }
 }
