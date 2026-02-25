@@ -3,69 +3,141 @@
 <head>
 <meta charset="UTF-8">
 <title>Groq Beast</title>
+
 <style>
 body {
-  font-family: Arial;
+  font-family: Arial, sans-serif;
   background: linear-gradient(135deg,#0f0f0f,#1a1a1a);
   color: white;
   display:flex;
   flex-direction:column;
   align-items:center;
+  justify-content:center;
   height:100vh;
   margin:0;
 }
+
 #chat {
   width:90%;
   max-width:600px;
-  margin-top:50px;
+  background:#181818;
+  padding:25px;
+  border-radius:18px;
+  box-shadow:0 0 25px rgba(0,0,0,0.6);
 }
+
 textarea {
   width:100%;
   padding:15px;
   border-radius:12px;
   border:none;
   font-size:16px;
+  resize:none;
+  outline:none;
+  background:#222;
+  color:white;
 }
+
 button {
-  margin-top:10px;
-  padding:10px 20px;
-  border-radius:10px;
+  margin-top:12px;
+  padding:12px;
+  width:100%;
+  border-radius:12px;
   border:none;
   cursor:pointer;
   font-weight:bold;
+  font-size:16px;
+  background:#4CAF50;
+  color:white;
+  transition:0.2s;
 }
+
+button:hover {
+  background:#45a049;
+}
+
+button:disabled {
+  background:#555;
+  cursor:not-allowed;
+}
+
 .response {
   margin-top:20px;
   background:#222;
   padding:15px;
   border-radius:12px;
+  min-height:60px;
+  white-space:pre-wrap;
 }
 </style>
 </head>
+
 <body>
 
 <div id="chat">
-  <textarea id="input" placeholder="Tape ton message..."></textarea>
-  <button onclick="send()">Envoyer</button>
+  <textarea id="input" rows="4" placeholder="Tape ton message..."></textarea>
+  <button id="sendBtn">Envoyer</button>
   <div id="output" class="response"></div>
 </div>
 
 <script>
-async function send() {
-  const input = document.getElementById("input").value
+document.addEventListener("DOMContentLoaded", () => {
+
+  const input = document.getElementById("input")
   const output = document.getElementById("output")
+  const button = document.getElementById("sendBtn")
 
-  output.innerHTML = "⚡ Génération..."
+  button.addEventListener("click", send)
 
-  const res = await fetch("/.netlify/functions/chat", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message: input })
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault()
+      send()
+    }
   })
 
-  const data = await res.json()
-  output.innerHTML = data.reply
-}
+  async function send() {
+
+    const message = input.value.trim()
+    if (!message) return
+
+    output.innerHTML = "⚡ Génération..."
+    button.disabled = true
+
+    try {
+      const response = await fetch("/.netlify/functions/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message })
+      })
+
+      const text = await response.text()
+
+      if (!response.ok) {
+        throw new Error("Erreur serveur " + response.status)
+      }
+
+      if (!text) {
+        throw new Error("Réponse vide du serveur")
+      }
+
+      const data = JSON.parse(text)
+
+      if (!data.reply) {
+        throw new Error("Format de réponse invalide")
+      }
+
+      output.innerHTML = data.reply
+
+    } catch (error) {
+      console.error(error)
+      output.innerHTML = "💥 " + error.message
+    }
+
+    button.disabled = false
+  }
+
+})
 </script>
 
 </body>
